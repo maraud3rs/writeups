@@ -157,7 +157,7 @@ Those extra checks prevent you from writing anywhere in 0x0804xxxx and 0xBxxxxxx
 
 The only memory region outside of this space is the heap - which is rwx, but randomized.
 
-You might be saying, "but there surely must be a bullshit trick that undermines all ASLR on setuid binaries?"...and you'd be right! If you using the bash built-in ulimit, you can modify the stack size of any subsequently launched binaries. By setting it to unlimited all the shared libraries and the vdso areas can't be randomized into the stack's area.
+You might be saying, "but there surely must be a bullshit trick that undermines all ASLR on setuid binaries?"...and you'd be right! If you use the bash built-in ulimit, you can modify the stack size of any subsequently launched binaries. By setting it to unlimited all the shared libraries and the vdso areas can't be randomized into the stack's area.
 
     $ ulimit -s unlimited
     $ cat /proc/1591/maps
