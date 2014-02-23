@@ -3,7 +3,7 @@
 
 The Codegate 2014 Qualifiers happened this past weekend. Codegate Quals is generally a good time (although it can be quite frustrating), so several Marauders and I decided we'd play. The competition was 30 hours long, which is nice as it doesn't dominate an entire weekend. It started at 7am local time (EST) on Saturday and finished at 1pm on Sunday.
 
-![Codegate Scoreboard](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/scoreboard.png)
+![Codegate Scoreboard](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/scoreboard.png)
 
 I'm normally quite vocally negative about challenges that don't have deterministic solutions. In the past, Codegate Quals has required brute-forcing stack-bases or leaking out libc through information disclosures. However, I'm happy to report that I was able to craft a deterministic 4stone exploit (after initially thinking it wasn't possible). 
 
@@ -71,23 +71,23 @@ The 4stone binary is a dynamically-linked 32bit ELF executable - nothing special
 
 The binary does rely on libncurses. That's potentially a little worrisome, as ncurses is quite foreign to me and can be quite difficult to script up interactions with it.
 
-![4stone Main](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/main.png)
+![4stone Main](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/main.png)
 
 So, let's load it into IDA. 4stone is well-formed and IDA has no trouble disassembling it. After browsing around a bit, 4stone appears to be a ncurses-based game. When you beat it, the game prints "You win! Xx seconds" or "Your lose" depending on the return value of the game. The seconds it takes you are calculated from two gettimeofday() calls (one before the game and one after).
 
 Side-Note: 4stone's main() sets up the frame pointer but then never uses it. This confuses IDA's stack analysis. To have IDA correctly identify stack-locals (so you can name them), you need to edit main's function attributes. You can do this by right-clicking on main at the top and selecting "Edit Function...".  
 
-![Edit function](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/editfunction.png)
+![Edit function](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/editfunction.png)
  
 You'll want to uncheck "BP based frame". Now IDA correctly identifies all the stack locals. 
 
-![4stone Main with locals](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/main2.png)
+![4stone Main with locals](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/main2.png)
 
 Isn't that better? :)
 
 The actual game code isn't interesting. It appears to be a variant of Connect4 with more columns. I quickly launched the game to verify my suspicions.
 
-![4stone game](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/game.png)
+![4stone game](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/game.png)
 
 The interesting bit happens when you win.
 
@@ -97,7 +97,7 @@ The game isn't randomized at all, so the following keys will always win:
 The Vulnerability
 ----------------------
 
-![4stone win conditions](https://github.com/maraud3rs/writeups/blob/master/codegate_4stone/win.png)
+![4stone win conditions](https://raw.github.com/maraud3rs/writeups/master/codegate_4stone/win.png)
  
 The code above is pretty straight-forward. If you win with a 0-second time, it takes argv[1], converts it to an integer, casts it as a pointer, and writes there with the result of the scanf.
 
